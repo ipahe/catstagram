@@ -18,8 +18,13 @@
         <form class="form-inline my-2 my-lg-0">
           <div class="form-group pr-2">
             <label for="catBreeds">Buscar por raza: &nbsp;</label>
-            <select class="form-control" id="catBreeds" v-model="searchParam" v-on:change="breedSelected">
-              <option ></option>
+            <select
+              class="form-control"
+              id="catBreeds"
+              v-model="searchParam"
+              v-on:change="breedSelected"
+            >
+              <option></option>
               <option v-for="breed in catBreeds" :key="breed.id" :value="breed.id">{{ breed.name }}</option>
             </select>
           </div>
@@ -29,10 +34,33 @@
     <section class="posts">
       <div class="container">
         <div class="row">
-          <Post v-for="(catImage, index) in catsArray" :cat="catImage" :key="catImage.id"/>
+          <Post v-for="(catImage, index) in catsArray" :cat="catImage" :key="catImage.id" @cat-clicked="showFullImage"/>
         </div>
       </div>
     </section>
+    <!-- Modal -->
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <img class="img-fluid blog-img" :src="catClicked.url" alt="Cat image">
+          </div>
+          <div class="modal-footer"></div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -48,7 +76,8 @@ export default {
       apiURL: "https://api.thecatapi.com/v1",
       catsArray: [],
       catBreeds: [],
-      searchParam: ''
+      searchParam: "",
+      catClicked: { url: "" }
     };
   },
   mounted() {
@@ -59,28 +88,57 @@ export default {
     });
 
     //Get initiall data
-    $.get(`${this.apiURL}/images/search`, { limit: 9, size: 300 }, response => { this.catsArray = response; });
-    $.get(`${this.apiURL}/breeds`, { }, response => { this.catBreeds = response; });
+    $.get(`${this.apiURL}/images/search`, { limit: 9, size: 300 }, response => {
+      this.catsArray = response;
+    });
+    $.get(`${this.apiURL}/breeds`, {}, response => {
+      this.catBreeds = response;
+    });
 
     window.onscroll = () => {
-      let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+      let bottomOfWindow =
+        document.documentElement.scrollTop + window.innerHeight ===
+        document.documentElement.offsetHeight;
       if (bottomOfWindow) {
-
-        if(this.searchParam.length > 0){
-          $.get(`${this.apiURL}/images/search?breed_ids=${this.searchParam}&limit=6`, { limit: 6, size: 300 }, response => { 
-            response.forEach(cat => { this.catsArray.push(cat) });            
-          });
-        }else{
-          $.get(`${this.apiURL}/images/search`, { limit: 6, size: 300 }, response => { 
-            response.forEach(cat => { this.catsArray.push(cat) });            
-          });
+        if (this.searchParam.length > 0) {
+          $.get(
+            `${this.apiURL}/images/search?breed_ids=${
+              this.searchParam
+            }&limit=6`,
+            { limit: 6, size: 300 },
+            response => {
+              response.forEach(cat => {
+                this.catsArray.push(cat);
+              });
+            }
+          );
+        } else {
+          $.get(
+            `${this.apiURL}/images/search`,
+            { limit: 6, size: 300 },
+            response => {
+              response.forEach(cat => {
+                this.catsArray.push(cat);
+              });
+            }
+          );
         }
       }
     };
   },
   methods: {
     breedSelected: function() {
-      $.get(`${this.apiURL}/images/search?breed_ids=${this.searchParam}&limit=9`, { }, response => { this.catsArray = response; });
+      $.get(
+        `${this.apiURL}/images/search?breed_ids=${this.searchParam}&limit=9`,
+        {},
+        response => {
+          this.catsArray = response;
+        }
+      );
+    },
+    showFullImage: function(catClicked) {
+      this.catClicked = catClicked;
+      $("#exampleModal").modal();
     }
   }
 };

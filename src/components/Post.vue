@@ -1,32 +1,9 @@
 <template>
   <div class="col-sm-4 post-wrapper">
     <div class="post">
-      <a href="javascript:;" v-on:click="showFullImage">
-        <img class="img-fluid blog-img" :src="cat.url" alt="Cat image" >
+      <a href="javascript:;" @click="catClicked">
+        <img class="img-fluid blog-img" :src="cat.url" alt="Cat image">
       </a>
-    </div>
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="exampleModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <img class="img-fluid blog-img" :src="cat.url" alt="Cat image">
-          </div>
-          <div class="modal-footer"></div>
-        </div>
-      </div>
     </div>
   </div>
 </template>
@@ -34,13 +11,13 @@
 <script>
 export default {
   name: "Post",
-  props: ['cat'],
+  props: ["cat"],
   data() {
     return {};
   },
   methods: {
-    showFullImage: function() {
-      $("#exampleModal").modal();
+    catClicked: function() {
+      this.$emit("cat-clicked", this.cat);
     }
   }
 };
