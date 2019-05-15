@@ -22,17 +22,14 @@
             placeholder="Buscar"
             aria-label="Search"
           >
-          <button
-            class="btn btn-outline-success my-2 my-sm-0"
-            type="button"
-          >Buscar</button>
+          <button class="btn btn-outline-success my-2 my-sm-0" type="button">Buscar</button>
         </form>
       </div>
     </nav>
     <section class="posts">
       <div class="container">
         <div class="row">
-          <Post v-for="(catImage, index) in catsArray" :image="catImage.url" :key="catImage.id"/>
+          <Post v-for="(catImage, index) in catsArray" :cat="catImage" :key="catImage.id"/>
         </div>
       </div>
     </section>
@@ -49,7 +46,7 @@ export default {
   data() {
     return {
       apiURL: "https://api.thecatapi.com/v1",
-      catsArray: null
+      catsArray: []
     };
   },
   mounted() {
@@ -57,12 +54,22 @@ export default {
     $.ajaxSetup({
       headers: { "x-api-key": "ea268ab2-5313-46d5-8b53-7f6a48f4f2ff" }
     });
-    $.get(`${this.apiURL}/images/search`, { limit: 9, size: 300 }, response => {
-      this.catsArray = response;
-      console.log(this.catsArray);
-    });
+
+    //Get initiall data
+    $.get(`${this.apiURL}/images/search`, { limit: 9, size: 300 }, response => { this.catsArray = response; });
+
+    window.onscroll = () => {
+      let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
+      if (bottomOfWindow) {
+        $.get(`${this.apiURL}/images/search`, { limit: 6, size: 300 }, response => { 
+          response.forEach(cat => { this.catsArray.push(cat) });            
+        });
+      }
+    };
   },
-  methods: {}
+  methods: {
+
+  }
 };
 </script>
 

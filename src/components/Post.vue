@@ -2,11 +2,7 @@
   <div class="col-sm-4 post-wrapper">
     <div class="post">
       <a href="javascript:;" v-on:click="showFullImage">
-        <img
-          class="img-fluid blog-img"
-          :src="image"
-          alt="blog image"
-        >
+        <img class="img-fluid blog-img" :src="cat.url" alt="Cat image" >
       </a>
     </div>
     <!-- Modal -->
@@ -26,11 +22,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <img
-              class="img-fluid blog-img"
-              :src="image"
-              alt="blog image"
-            >
+            <img class="img-fluid blog-img" :src="cat.url" alt="Cat image">
           </div>
           <div class="modal-footer"></div>
         </div>
@@ -42,7 +34,7 @@
 <script>
 export default {
   name: "Post",
-  props: ['image'],
+  props: ['cat'],
   data() {
     return {};
   },
