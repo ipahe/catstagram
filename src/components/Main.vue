@@ -16,13 +16,13 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto"></ul>
         <form class="form-inline my-2 my-lg-0">
-          <input
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Buscar"
-            aria-label="Search"
-          >
-          <button class="btn btn-outline-success my-2 my-sm-0" type="button">Buscar</button>
+          <div class="form-group pr-2">
+            <label for="catBreeds">Buscar por raza: &nbsp;</label>
+            <select class="form-control" id="catBreeds" v-model="searchParam" v-on:change="breedSelected">
+              <option ></option>
+              <option v-for="breed in catBreeds" :key="breed.id" :value="breed.id">{{ breed.name }}</option>
+            </select>
+          </div>
         </form>
       </div>
     </nav>
@@ -46,29 +46,42 @@ export default {
   data() {
     return {
       apiURL: "https://api.thecatapi.com/v1",
-      catsArray: []
+      catsArray: [],
+      catBreeds: [],
+      searchParam: ''
     };
   },
   mounted() {
     //Add defatult token header to every request
     $.ajaxSetup({
-      headers: { "x-api-key": "ea268ab2-5313-46d5-8b53-7f6a48f4f2ff" }
+      headers: { "x-api-key": "ea268ab2-5313-46d5-8b53-7f6a48f4f2ff" },
+      cache: false
     });
 
     //Get initiall data
     $.get(`${this.apiURL}/images/search`, { limit: 9, size: 300 }, response => { this.catsArray = response; });
+    $.get(`${this.apiURL}/breeds`, { }, response => { this.catBreeds = response; });
 
     window.onscroll = () => {
       let bottomOfWindow = document.documentElement.scrollTop + window.innerHeight === document.documentElement.offsetHeight;
       if (bottomOfWindow) {
-        $.get(`${this.apiURL}/images/search`, { limit: 6, size: 300 }, response => { 
-          response.forEach(cat => { this.catsArray.push(cat) });            
-        });
+
+        if(this.searchParam.length > 0){
+          $.get(`${this.apiURL}/images/search?breed_ids=${this.searchParam}&limit=6`, { limit: 6, size: 300 }, response => { 
+            response.forEach(cat => { this.catsArray.push(cat) });            
+          });
+        }else{
+          $.get(`${this.apiURL}/images/search`, { limit: 6, size: 300 }, response => { 
+            response.forEach(cat => { this.catsArray.push(cat) });            
+          });
+        }
       }
     };
   },
   methods: {
-
+    breedSelected: function() {
+      $.get(`${this.apiURL}/images/search?breed_ids=${this.searchParam}&limit=9`, { }, response => { this.catsArray = response; });
+    }
   }
 };
 </script>
