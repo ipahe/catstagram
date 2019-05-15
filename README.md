@@ -2,7 +2,7 @@
 
 > "Catstagram v1.0.0" by IPaHe
 
-## Correr en modo de desarrollo
+## Correr en modo de desarrollo + preguntas y respuestas
 
 ``` bash
 # Instalar dependencias a través de NPM
