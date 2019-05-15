@@ -22,43 +22,17 @@
             placeholder="Buscar"
             aria-label="Search"
           >
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Buscar</button>
+          <button
+            class="btn btn-outline-success my-2 my-sm-0"
+            type="button"
+          >Buscar</button>
         </form>
       </div>
     </nav>
     <section class="posts">
       <div class="container">
         <div class="row">
-          <div class="col-sm-4 post-wrapper">
-            <div class="post">
-              <img class="img-fluid blog-img" src="http://www.themashabrand.com/templates/Masha/Medium/img/blog/9.jpg" alt="blog image">
-            </div>
-          </div>
-		  <div class="col-sm-4 post-wrapper">
-            <div class="post">
-              <img class="img-fluid blog-img" src="http://www.themashabrand.com/templates/Masha/Medium/img/blog/9.jpg" alt="blog image">
-            </div>
-          </div> 
-		  <div class="col-sm-4 post-wrapper">
-            <div class="post">
-              <img class="img-fluid blog-img" src="http://www.themashabrand.com/templates/Masha/Medium/img/blog/9.jpg" alt="blog image">
-            </div>
-          </div> 
-		  <div class="col-sm-4 post-wrapper">
-            <div class="post">
-              <img class="img-fluid blog-img" src="http://www.themashabrand.com/templates/Masha/Medium/img/blog/9.jpg" alt="blog image">
-            </div>
-          </div> 
-		  <div class="col-sm-4 post-wrapper">
-            <div class="post">
-              <img class="img-fluid blog-img" src="http://www.themashabrand.com/templates/Masha/Medium/img/blog/9.jpg" alt="blog image">
-            </div>
-          </div> 
-		  <div class="col-sm-4 post-wrapper">
-            <div class="post">
-              <img class="img-fluid blog-img" src="http://www.themashabrand.com/templates/Masha/Medium/img/blog/9.jpg" alt="blog image">
-            </div>
-          </div> 
+          <Post v-for="(catImage, index) in catsArray" :image="catImage.url" :key="catImage.id"/>
         </div>
       </div>
     </section>
@@ -66,11 +40,29 @@
 </template>
 
 <script>
+import Post from "./Post";
 export default {
   name: "Main",
+  components: {
+    Post
+  },
   data() {
-    return {};
-  }
+    return {
+      apiURL: "https://api.thecatapi.com/v1",
+      catsArray: null
+    };
+  },
+  mounted() {
+    //Add defatult token header to every request
+    $.ajaxSetup({
+      headers: { "x-api-key": "ea268ab2-5313-46d5-8b53-7f6a48f4f2ff" }
+    });
+    $.get(`${this.apiURL}/images/search`, { limit: 9, size: 300 }, response => {
+      this.catsArray = response;
+      console.log(this.catsArray);
+    });
+  },
+  methods: {}
 };
 </script>
 
@@ -80,7 +72,7 @@ export default {
   padding-top: 20px;
 }
 
-.post-wrapper{
-	padding-bottom: 20px;
+.post-wrapper {
+  padding-bottom: 20px;
 }
 </style>

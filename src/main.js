@@ -5,6 +5,8 @@ import App from './App'
 import 'bootstrap'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+window.$ = require('jquery')
+
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
