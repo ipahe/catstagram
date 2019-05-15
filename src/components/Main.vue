@@ -96,9 +96,7 @@ export default {
     });
 
     window.onscroll = () => {
-      let bottomOfWindow =
-        document.documentElement.scrollTop + window.innerHeight ===
-        document.documentElement.offsetHeight;
+      let bottomOfWindow = $(window).scrollTop() == $(document).height() - $(window).height();
       if (bottomOfWindow) {
         if (this.searchParam.length > 0) {
           $.get(
